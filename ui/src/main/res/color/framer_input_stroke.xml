@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright © 2017-2025 WireGuard LLC. All Rights Reserved.
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+<!-- Focus = accent-blue ring (the one allowed focus use); idle = hairline. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:color="@color/framer_accent_blue" />
+    <item android:state_hovered="true" android:color="@color/framer_ink_muted" />
+    <item android:color="@color/framer_hairline" />
+</selector>

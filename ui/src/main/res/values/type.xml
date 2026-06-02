@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright © 2017-2025 WireGuard LLC. All Rights Reserved.
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+<!--
+  Ninja WG · Framer typographic voice (see DESIGN.md › Typography).
+
+  · Display tiers use Inter SemiBold/Bold as the GT-Walsheim substitute with
+    aggressive negative tracking (~-5% on display, -3.6% on headlines).
+  · Body tiers use Inter Regular/Medium at ~-1% tracking.
+  · Inter's OpenType character variants (cv01/05/09/11, ss03/07, dlig) carry
+    the brand voice and are enabled everywhere body type appears.
+  · letterSpacing is expressed in em (px ÷ fontSize) since Android is em-based.
+-->
+<resources>
+
+    <!-- Display · GT Walsheim substitute (Inter SemiBold), poster tracking -->
+    <style name="TextAppearance.NinjaWG.Display.XXL" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:textSize">110sp</item>
+        <item name="android:letterSpacing">-0.05</item>
+        <item name="android:fontFeatureSettings">"ss02"</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+    </style>
+
+    <style name="TextAppearance.NinjaWG.Display.XL" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:textSize">85sp</item>
+        <item name="android:letterSpacing">-0.05</item>
+        <item name="android:fontFeatureSettings">"ss02"</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+    </style>
+
+    <style name="TextAppearance.NinjaWG.Display.LG" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:textSize">62sp</item>
+        <item name="android:letterSpacing">-0.05</item>
+        <item name="android:fontFeatureSettings">"ss02"</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+    </style>
+
+    <!-- display-md · card titles / smaller display (32px, -3.1%) -->
+    <style name="TextAppearance.NinjaWG.Display.MD" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:letterSpacing">-0.031</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- headline · 22px Bold, -3.6% (pricing/FAQ/detail titles) -->
+    <style name="TextAppearance.NinjaWG.Headline" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:letterSpacing">-0.036</item>
+        <item name="android:fontFeatureSettings">"cv05"</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.NinjaWG.Headline.Small" parent="TextAppearance.NinjaWG.Headline">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <!-- subhead · 24px Regular, lead body beside display -->
+    <style name="TextAppearance.NinjaWG.Subhead" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:fontFeatureSettings">"cv11"</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- Body family · Inter Variable voice with OpenType variants -->
+    <style name="TextAppearance.NinjaWG.BodyLarge" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:fontFeatureSettings">"cv01", "cv05", "cv09", "cv11", "ss03", "ss07", "dlig"</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.NinjaWG.Body" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:fontFeatureSettings">"cv01", "cv05", "cv09", "cv11", "ss03", "ss07", "dlig"</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.NinjaWG.BodySmall" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:fontFamily">@font/inter_medium</item>
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:fontFeatureSettings">"cv01", "cv05", "cv09", "cv11", "ss03", "ss07"</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.NinjaWG.Caption" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:fontFamily">@font/inter_medium</item>
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:fontFeatureSettings">"cv01", "cv05", "cv09", "cv11"</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="TextAppearance.NinjaWG.Micro" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:fontFeatureSettings">"cv01", "cv05", "cv09", "cv11"</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <!-- button · 14px Medium pill label -->
+    <style name="TextAppearance.NinjaWG.Button" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:fontFamily">@font/inter_medium</item>
+        <item name="fontFamily">@font/inter_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFeatureSettings">"cv01", "cv05", "cv09", "cv11"</item>
+    </style>
+
+</resources>

@@ -3,6 +3,7 @@
   ~ SPDX-License-Identifier: Apache-2.0
   -->
 <resources>
-    <bool name="light_status_bar">true</bool>
-    <bool name="light_navigation_bar">true</bool>
+    <!-- Ninja WG is dark-only: system bars always carry dark content. -->
+    <bool name="light_status_bar">false</bool>
+    <bool name="light_navigation_bar">false</bool>
 </resources>

@@ -64,4 +64,45 @@
     <color name="md_theme_dark_surfaceTint">#ADC7FF</color>
     <color name="md_theme_dark_outlineVariant">#44474F</color>
     <color name="md_theme_dark_scrim">#000000</color>
+
+    <!-- ============================================================= -->
+    <!-- Ninja WG · Framer design system tokens (see DESIGN.md)         -->
+    <!-- Dark-only marketing canvas: pure-black surfaces, white ink,    -->
+    <!-- a single blue accent, and vibrant gradient spotlight grounds.  -->
+    <!-- ============================================================= -->
+
+    <!-- Brand & accent -->
+    <color name="framer_white">#ffffff</color>
+    <color name="framer_black">#000000</color>
+    <color name="framer_accent_blue">#0099ff</color>
+
+    <!-- Surfaces (canvas -> surface-1 -> surface-2 lift) -->
+    <color name="framer_canvas">#090909</color>
+    <color name="framer_surface_1">#141414</color>
+    <color name="framer_surface_2">#1c1c1c</color>
+    <color name="framer_hairline">#262626</color>
+    <color name="framer_hairline_soft">#1a1a1a</color>
+    <color name="framer_inverse_canvas">#ffffff</color>
+    <color name="framer_inverse_ink">#000000</color>
+
+    <!-- Text -->
+    <color name="framer_ink">#ffffff</color>
+    <color name="framer_ink_muted">#999999</color>
+
+    <!-- Semantic -->
+    <color name="framer_success">#22c55e</color>
+    <color name="framer_error">#ff5566</color>
+
+    <!-- Signature gradient spotlight grounds -->
+    <color name="framer_gradient_magenta">#d44df0</color>
+    <color name="framer_gradient_violet">#6a4cf5</color>
+    <color name="framer_gradient_orange">#ff7a3d</color>
+    <color name="framer_gradient_coral">#ff5577</color>
+
+    <!-- Translucent depth signals -->
+    <color name="framer_light_edge">#1affffff</color>
+    <color name="framer_focus_ring">#260099ff</color>
+    <color name="framer_ripple">#22ffffff</color>
+    <color name="framer_ripple_dark">#22000000</color>
+    <color name="framer_scrim">#cc000000</color>
 </resources>

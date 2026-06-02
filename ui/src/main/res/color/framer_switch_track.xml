@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright © 2017-2025 WireGuard LLC. All Rights Reserved.
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+<!-- Checked = accent-blue (the one allowed "selected indicator" use). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:color="@color/framer_accent_blue" />
+    <item android:state_enabled="false" android:color="@color/framer_hairline_soft" />
+    <item android:color="@color/framer_surface_2" />
+</selector>

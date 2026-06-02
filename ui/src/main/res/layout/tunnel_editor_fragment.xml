@@ -282,7 +282,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:background="?attr/colorPrimaryDark"
+                    android:background="@color/framer_surface_1"
                     android:gravity="center"
                     android:onClick="@{() -> config.addPeer()}"
                     android:text="@string/add_peer"

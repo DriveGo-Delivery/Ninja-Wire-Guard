@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_action_share_white" />
+        app:srcCompat="@drawable/ic_action_share_white"
+        app:tint="@color/framer_black" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

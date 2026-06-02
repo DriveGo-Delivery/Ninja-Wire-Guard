@@ -1,6 +1,16 @@
 @file:Suppress("UnstableApiUsage")
 
+import java.util.Properties
+
 val pkg: String = providers.gradleProperty("wireguardPackageName").get()
+
+// Release signing is configured from release-signing/keystore.properties (git-ignored).
+// When absent (e.g. CI without secrets), release builds are produced unsigned.
+val keystorePropertiesFile = rootProject.file("release-signing/keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists())
+        keystorePropertiesFile.inputStream().use { load(it) }
+}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -27,11 +37,23 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles("proguard-android-optimize.txt")
+            if (keystorePropertiesFile.exists())
+                signingConfig = signingConfigs.getByName("release")
             packaging {
                 resources {
                     excludes += "DebugProbesKt.bin"

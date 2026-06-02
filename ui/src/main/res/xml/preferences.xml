@@ -23,13 +23,6 @@
         android:title="@string/log_viewer_pref_title" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="dark_theme"
-        android:singleLineTitle="false"
-        android:summaryOff="@string/dark_theme_summary_off"
-        android:summaryOn="@string/dark_theme_summary_on"
-        android:title="@string/dark_theme_title" />
-    <CheckBoxPreference
-        android:defaultValue="false"
         android:key="multiple_tunnels"
         android:singleLineTitle="false"
         android:summaryOff="@string/multiple_tunnels_summary_off"

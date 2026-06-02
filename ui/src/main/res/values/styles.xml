@@ -4,29 +4,43 @@
   -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- ===================================================================== -->
+    <!-- App theme chain (manifest uses @style/AppTheme)                        -->
+    <!-- WireGuardTheme -> Theme.NinjaWG.Framer (themes_framer.xml)             -->
+    <!-- ===================================================================== -->
+
     <style name="WireGuardTheme.Toolbar" parent="Widget.Material3.Toolbar">
-        <item name="android:background">?attr/colorSurface</item>
+        <item name="android:background">@color/framer_canvas</item>
+        <item name="titleTextColor">@color/framer_ink</item>
+        <item name="subtitleTextColor">@color/framer_ink_muted</item>
+        <item name="titleTextAppearance">@style/TextAppearance.NinjaWG.Headline.Small</item>
     </style>
 
     <style name="AppThemeBase" parent="WireGuardTheme">
-        <item name="materialCardViewStyle">@style/WireGuardTheme.MaterialCardView</item>
+        <item name="materialCardViewStyle">@style/Widget.NinjaWG.Card</item>
         <item name="toolbarStyle">@style/WireGuardTheme.Toolbar</item>
         <item name="bottomSheetDialogTheme">@style/WireGuardTheme.BottomSheetDialog</item>
-        <item name="android:statusBarColor">?android:colorBackground</item>
-        <item name="android:windowLightStatusBar">@bool/light_status_bar</item>
+        <item name="android:statusBarColor">@color/framer_canvas</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <!-- Various additional API-specific features in values-v*/styles.xml -->
     <style name="AppTheme" parent="AppThemeBase" />
 
-    <style name="WireGuardTheme.MaterialCardView" parent="Widget.Material3.CardView.Elevated">
-        <item name="cornerRadius">4dp</item>
-        <item name="contentPadding">8dp</item>
-    </style>
-
     <style name="WireGuardTheme.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="colorSurface">@color/framer_surface_1</item>
+        <item name="colorSurfaceContainerLow">@color/framer_surface_1</item>
+    </style>
+
+    <style name="WireGuardTheme.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/framer_surface_1</item>
+        <item name="colorSurfaceContainerHigh">@color/framer_surface_1</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.NinjaWG.ExtraLarge</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.NinjaWG.Button.Dialog</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.NinjaWG.Button.Dialog</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.NinjaWG.Button.Dialog</item>
     </style>
 
     <style name="NoBackgroundTheme" parent="AppTheme">
@@ -46,4 +60,176 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <!-- ===================================================================== -->
+    <!-- Shape scale (Framer rounded tokens, all rounded family)               -->
+    <!-- ===================================================================== -->
+
+    <style name="ShapeAppearance.NinjaWG.ExtraSmall" parent="ShapeAppearance.Material3.Corner.ExtraSmall">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_xs</item>
+    </style>
+
+    <style name="ShapeAppearance.NinjaWG.Small" parent="ShapeAppearance.Material3.Corner.Small">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_sm</item>
+    </style>
+
+    <style name="ShapeAppearance.NinjaWG.Medium" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_md</item>
+    </style>
+
+    <style name="ShapeAppearance.NinjaWG.Large" parent="ShapeAppearance.Material3.Corner.Large">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_lg</item>
+    </style>
+
+    <style name="ShapeAppearance.NinjaWG.ExtraLarge" parent="ShapeAppearance.Material3.Corner.ExtraLarge">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_xl</item>
+    </style>
+
+    <style name="ShapeAppearance.NinjaWG.Pill" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_pill</item>
+    </style>
+
+    <!-- ===================================================================== -->
+    <!-- Buttons — every CTA is a pill                                         -->
+    <!-- ===================================================================== -->
+
+    <!-- Primary: white pill on dark (the only primary CTA shape) -->
+    <style name="Widget.NinjaWG.Button" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/framer_white</item>
+        <item name="android:textColor">@color/framer_black</item>
+        <item name="iconTint">@color/framer_black</item>
+        <item name="rippleColor">@color/framer_ripple_dark</item>
+        <item name="cornerRadius">@dimen/radius_pill</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.NinjaWG.Pill</item>
+        <item name="android:textAppearance">@style/TextAppearance.NinjaWG.Button</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:paddingLeft">@dimen/pill_padding_horizontal</item>
+        <item name="android:paddingRight">@dimen/pill_padding_horizontal</item>
+        <item name="android:insetTop">4dp</item>
+        <item name="android:insetBottom">4dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <!-- Secondary: charcoal pill -->
+    <style name="Widget.NinjaWG.Button.Secondary" parent="Widget.NinjaWG.Button">
+        <item name="backgroundTint">@color/framer_surface_1</item>
+        <item name="android:textColor">@color/framer_ink</item>
+        <item name="iconTint">@color/framer_ink</item>
+        <item name="rippleColor">@color/framer_ripple</item>
+    </style>
+
+    <!-- Translucent: lifted secondary on busy grounds, softer 30dp corners -->
+    <style name="Widget.NinjaWG.Button.Translucent" parent="Widget.NinjaWG.Button">
+        <item name="backgroundTint">@color/framer_surface_2</item>
+        <item name="android:textColor">@color/framer_ink</item>
+        <item name="iconTint">@color/framer_ink</item>
+        <item name="rippleColor">@color/framer_ripple</item>
+        <item name="cornerRadius">@dimen/radius_xxl</item>
+    </style>
+
+    <!-- Text button: ink label, no fill (in-row menu actions) -->
+    <style name="Widget.NinjaWG.Button.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/framer_ink</item>
+        <item name="iconTint">@color/framer_ink</item>
+        <item name="rippleColor">@color/framer_ripple</item>
+        <item name="android:textAppearance">@style/TextAppearance.NinjaWG.Button</item>
+        <item name="cornerRadius">@dimen/radius_pill</item>
+    </style>
+
+    <!-- Dialog buttons: text pills with white emphasis -->
+    <style name="Widget.NinjaWG.Button.Dialog" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/framer_white</item>
+        <item name="rippleColor">@color/framer_ripple</item>
+        <item name="android:textAppearance">@style/TextAppearance.NinjaWG.Button</item>
+    </style>
+
+    <!-- ===================================================================== -->
+    <!-- Cards — surface lift, flat (no shadow on the dark canvas)             -->
+    <!-- ===================================================================== -->
+
+    <style name="Widget.NinjaWG.Card" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/framer_surface_1</item>
+        <item name="cardCornerRadius">@dimen/radius_xl</item>
+        <item name="cardElevation">0dp</item>
+        <item name="rippleColor">@color/framer_ripple</item>
+        <item name="contentPadding">@dimen/space_md</item>
+        <item name="strokeColor">@color/framer_hairline_soft</item>
+        <item name="strokeWidth">@dimen/space_hair</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.NinjaWG.ExtraLarge</item>
+    </style>
+
+    <!-- Featured card: one surface step up -->
+    <style name="Widget.NinjaWG.Card.Featured" parent="Widget.NinjaWG.Card">
+        <item name="cardBackgroundColor">@color/framer_surface_2</item>
+    </style>
+
+    <!-- ===================================================================== -->
+    <!-- Text inputs — surface-1 box, 10dp corners, blue focus ring           -->
+    <!-- ===================================================================== -->
+
+    <style name="Widget.NinjaWG.TextInput" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/framer_surface_1</item>
+        <item name="boxStrokeColor">@color/framer_input_stroke</item>
+        <item name="boxStrokeWidth">@dimen/space_hair</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxCornerRadiusTopStart">@dimen/radius_md</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_md</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_md</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_md</item>
+        <item name="android:textColorHint">@color/framer_ink_muted</item>
+        <item name="hintTextColor">@color/framer_accent_blue</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.NinjaWG.TextInput</item>
+    </style>
+
+    <style name="ThemeOverlay.NinjaWG.TextInput" parent="">
+        <item name="colorPrimary">@color/framer_accent_blue</item>
+        <item name="colorOnSurface">@color/framer_ink</item>
+        <item name="android:textColor">@color/framer_ink</item>
+        <item name="android:editTextStyle">@style/Widget.NinjaWG.TextInputEditText</item>
+    </style>
+
+    <style name="Widget.NinjaWG.TextInputEditText" parent="Widget.Material3.TextInputEditText.OutlinedBox">
+        <item name="android:textAppearance">@style/TextAppearance.NinjaWG.Body</item>
+        <item name="android:textColor">@color/framer_ink</item>
+    </style>
+
+    <!-- ===================================================================== -->
+    <!-- Switch — VPN toggle. Checked track = accent-blue (selected signal)    -->
+    <!-- ===================================================================== -->
+
+    <style name="Widget.NinjaWG.Switch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:thumbTint">@color/framer_switch_thumb</item>
+        <item name="android:trackTint">@color/framer_switch_track</item>
+        <item name="thumbTint">@color/framer_switch_thumb</item>
+        <item name="trackTint">@color/framer_switch_track</item>
+    </style>
+
+    <!-- ===================================================================== -->
+    <!-- FAB — white, the primary "create" CTA                                 -->
+    <!-- ===================================================================== -->
+
+    <style name="Widget.NinjaWG.Fab" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="backgroundTint">@color/framer_white</item>
+        <item name="tint">@color/framer_black</item>
+        <item name="rippleColor">@color/framer_ripple_dark</item>
+    </style>
+
+    <!-- ===================================================================== -->
+    <!-- Tabs — pricing-style toggle: selected = ink, idle = muted             -->
+    <!-- ===================================================================== -->
+
+    <style name="Widget.NinjaWG.TabLayout" parent="Widget.Material3.TabLayout">
+        <item name="tabIndicatorColor">@color/framer_white</item>
+        <item name="tabSelectedTextColor">@color/framer_ink</item>
+        <item name="tabTextColor">@color/framer_ink_muted</item>
+        <item name="tabRippleColor">@color/framer_ripple</item>
+        <item name="tabTextAppearance">@style/TextAppearance.NinjaWG.Button</item>
+    </style>
+
 </resources>

@@ -2,19 +2,26 @@
   ~ Copyright © 2017-2025 WireGuard LLC. All Rights Reserved.
   ~ SPDX-License-Identifier: Apache-2.0
   -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<!-- Framer feature-row on canvas: surface lift marks selection, not colour. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:color="@color/framer_ripple">
+    <item android:id="@android:id/mask">
+        <color android:color="@color/framer_white" />
+    </item>
     <item>
         <selector>
             <item
                 android:state_activated="true"
                 app:state_multiselected="true">
-                <color android:color="?attr/colorSurfaceVariant" />
+                <color android:color="@color/framer_surface_2" />
             </item>
             <item android:state_activated="true">
-                <color android:color="?attr/colorControlHighlight" />
+                <color android:color="@color/framer_surface_1" />
+            </item>
+            <item>
+                <color android:color="@android:color/transparent" />
             </item>
         </selector>
     </item>
-    <item android:drawable="?attr/selectableItemBackground" />
-</layer-list>
+</ripple>

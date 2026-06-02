@@ -2,9 +2,14 @@
   ~ Copyright © 2017-2025 WireGuard LLC. All Rights Reserved.
   ~ SPDX-License-Identifier: Apache-2.0
   -->
+<!--
+  Framer TV cards: idle = surface-1 lift so the card reads against the canvas;
+  active (up) = accent-blue (the allowed "selected/active indicator" use);
+  deleting+focused = error. White card text stays legible on all three.
+-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item                               app:state_isUp="true"   app:state_isDeleting="false"    android:color="?attr/colorPrimaryInverse" />
-    <item android:state_focused="true"                          app:state_isDeleting="true"     android:color="?attr/colorErrorContainer" />
-    <item                                                                                       android:color="?attr/colorOnSurfaceInverse" />
+    <item app:state_isUp="true" app:state_isDeleting="false" android:color="@color/framer_accent_blue" />
+    <item android:state_focused="true" app:state_isDeleting="true" android:color="@color/framer_error" />
+    <item android:color="@color/framer_surface_1" />
 </selector>

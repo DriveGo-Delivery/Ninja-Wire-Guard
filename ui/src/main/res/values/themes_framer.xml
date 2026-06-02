@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright © 2017-2025 WireGuard LLC. All Rights Reserved.
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+<!--
+  Ninja WG · Framer design system base theme (see DESIGN.md).
+  Material3 colour roles are remapped onto the Framer token set; the single blue
+  accent is reserved for hyperlinks, focus and selection only. Both the default
+  and the -night WireGuardTheme inherit this unchanged.
+-->
+<resources>
+    <style name="Theme.NinjaWG.Framer" parent="Theme.Material3.Dark">
+
+        <!-- Brand / primary: white pill CTA on dark -->
+        <item name="colorPrimary">@color/framer_white</item>
+        <item name="colorOnPrimary">@color/framer_black</item>
+        <item name="colorPrimaryContainer">@color/framer_surface_2</item>
+        <item name="colorOnPrimaryContainer">@color/framer_ink</item>
+        <item name="colorPrimaryInverse">@color/framer_black</item>
+
+        <!-- Secondary / tertiary kept monochrome (icons, ripples = ink) -->
+        <item name="colorSecondary">@color/framer_ink</item>
+        <item name="colorOnSecondary">@color/framer_black</item>
+        <item name="colorSecondaryContainer">@color/framer_surface_2</item>
+        <item name="colorOnSecondaryContainer">@color/framer_ink</item>
+        <item name="colorTertiary">@color/framer_ink</item>
+        <item name="colorOnTertiary">@color/framer_black</item>
+        <item name="colorTertiaryContainer">@color/framer_surface_2</item>
+        <item name="colorOnTertiaryContainer">@color/framer_ink</item>
+
+        <!-- Error -->
+        <item name="colorError">@color/framer_error</item>
+        <item name="colorOnError">@color/framer_black</item>
+        <item name="colorErrorContainer">@color/framer_surface_2</item>
+        <item name="colorOnErrorContainer">@color/framer_error</item>
+
+        <!-- Canvas + surfaces (canvas -> surface-1 -> surface-2 lift) -->
+        <item name="android:colorBackground">@color/framer_canvas</item>
+        <item name="colorOnBackground">@color/framer_ink</item>
+        <item name="colorSurface">@color/framer_canvas</item>
+        <item name="colorOnSurface">@color/framer_ink</item>
+        <item name="colorSurfaceVariant">@color/framer_surface_2</item>
+        <item name="colorOnSurfaceVariant">@color/framer_ink_muted</item>
+        <item name="colorSurfaceContainerLowest">@color/framer_canvas</item>
+        <item name="colorSurfaceContainerLow">@color/framer_surface_1</item>
+        <item name="colorSurfaceContainer">@color/framer_surface_1</item>
+        <item name="colorSurfaceContainerHigh">@color/framer_surface_2</item>
+        <item name="colorSurfaceContainerHighest">@color/framer_surface_2</item>
+        <item name="colorSurfaceBright">@color/framer_surface_2</item>
+        <item name="colorSurfaceDim">@color/framer_canvas</item>
+        <item name="colorSurfaceInverse">@color/framer_inverse_canvas</item>
+        <item name="colorOnSurfaceInverse">@color/framer_inverse_ink</item>
+
+        <!-- Lines + chromatic signals -->
+        <item name="colorOutline">@color/framer_hairline</item>
+        <item name="colorOutlineVariant">@color/framer_hairline_soft</item>
+        <item name="colorControlHighlight">@color/framer_ripple</item>
+        <item name="colorControlActivated">@color/framer_accent_blue</item>
+        <item name="android:colorControlActivated">@color/framer_accent_blue</item>
+        <item name="android:textColorLink">@color/framer_accent_blue</item>
+        <item name="android:textColorHighlight">@color/framer_focus_ring</item>
+
+        <!-- System bars sit on the canvas; never light -->
+        <item name="android:statusBarColor">@color/framer_canvas</item>
+        <item name="android:navigationBarColor">@color/framer_canvas</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+
+        <!-- ===== Global type: Inter everywhere ===== -->
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="fontFamily">@font/inter_regular</item>
+
+        <!-- ===== Material type scale -> Framer voice ===== -->
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.NinjaWG.Display.XXL</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.NinjaWG.Display.XL</item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.NinjaWG.Display.LG</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.NinjaWG.Display.MD</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.NinjaWG.Headline</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.NinjaWG.Headline.Small</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.NinjaWG.Headline.Small</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.NinjaWG.BodyLarge</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.NinjaWG.BodySmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.NinjaWG.Body</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.NinjaWG.Body</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.NinjaWG.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.NinjaWG.Button</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.NinjaWG.Caption</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.NinjaWG.Micro</item>
+
+        <!-- ===== Widget defaults ===== -->
+        <item name="materialButtonStyle">@style/Widget.NinjaWG.Button</item>
+        <item name="materialCardViewStyle">@style/Widget.NinjaWG.Card</item>
+        <item name="textInputStyle">@style/Widget.NinjaWG.TextInput</item>
+        <item name="floatingActionButtonStyle">@style/Widget.NinjaWG.Fab</item>
+        <item name="switchStyle">@style/Widget.NinjaWG.Switch</item>
+        <item name="tabStyle">@style/Widget.NinjaWG.TabLayout</item>
+        <item name="toolbarStyle">@style/WireGuardTheme.Toolbar</item>
+        <item name="bottomSheetDialogTheme">@style/WireGuardTheme.BottomSheetDialog</item>
+        <item name="materialAlertDialogTheme">@style/WireGuardTheme.AlertDialog</item>
+
+        <!-- Component corner shape scale -->
+        <item name="shapeAppearanceCornerExtraSmall">@style/ShapeAppearance.NinjaWG.ExtraSmall</item>
+        <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.NinjaWG.Small</item>
+        <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.NinjaWG.Medium</item>
+        <item name="shapeAppearanceCornerLarge">@style/ShapeAppearance.NinjaWG.Large</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.NinjaWG.ExtraLarge</item>
+    </style>
+</resources>

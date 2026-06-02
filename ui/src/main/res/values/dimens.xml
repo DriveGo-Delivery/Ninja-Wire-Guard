@@ -9,4 +9,29 @@
     <dimen name="bottom_sheet_top_padding">8dp</dimen>
     <dimen name="bottom_sheet_icon_padding">16dp</dimen>
     <dimen name="tunnel_list_placeholder_margin">16dp</dimen>
+
+    <!-- ===== Framer spacing scale (5px base: 5/10/15/20/30) ===== -->
+    <dimen name="space_hair">1dp</dimen>
+    <dimen name="space_xxs">4dp</dimen>
+    <dimen name="space_xs">8dp</dimen>
+    <dimen name="space_sm">12dp</dimen>
+    <dimen name="space_md">15dp</dimen>
+    <dimen name="space_lg">20dp</dimen>
+    <dimen name="space_xl">30dp</dimen>
+    <dimen name="space_xxl">40dp</dimen>
+    <dimen name="space_section">96dp</dimen>
+
+    <!-- ===== Framer border-radius scale ===== -->
+    <dimen name="radius_xs">4dp</dimen>
+    <dimen name="radius_sm">6dp</dimen>
+    <dimen name="radius_md">10dp</dimen>
+    <dimen name="radius_lg">15dp</dimen>
+    <dimen name="radius_xl">20dp</dimen>
+    <dimen name="radius_xxl">30dp</dimen>
+    <dimen name="radius_pill">100dp</dimen>
+    <dimen name="radius_full">9999dp</dimen>
+
+    <!-- Pill CTA padding (10px v · 15px h) -->
+    <dimen name="pill_padding_vertical">10dp</dimen>
+    <dimen name="pill_padding_horizontal">15dp</dimen>
 </resources>
