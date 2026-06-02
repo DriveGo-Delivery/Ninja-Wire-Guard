@@ -15,7 +15,5 @@ build/
 *.class
 *.dex
 *.iml
-*.jks
-release-signing/
 gradlew.bat
 maint/
