@@ -134,14 +134,6 @@
             android:exported="false" />
 
         <receiver
-            android:name=".updater.Updater$AppUpdatedReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
             android:name=".model.TunnelManager$IntentReceiver"
             android:exported="true"
             android:permission="${applicationId}.permission.CONTROL_TUNNELS">

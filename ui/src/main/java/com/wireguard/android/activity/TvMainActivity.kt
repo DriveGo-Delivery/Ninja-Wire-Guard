@@ -22,7 +22,6 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.view.forEach
@@ -48,7 +47,6 @@ import com.wireguard.android.model.ObservableTunnel
 import com.wireguard.android.util.ErrorMessages
 import com.wireguard.android.util.QuantityFormatter
 import com.wireguard.android.util.TunnelImporter
-import com.wireguard.android.util.UserKnobs
 import com.wireguard.android.util.applicationScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -113,14 +111,8 @@ class TvMainActivity : AppCompatActivity() {
     private val filesRoot = ObservableField("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                applicationScope.launch {
-                    UserKnobs.setDarkTheme(true)
-                }
-            }
-        }
+        // Night mode is forced application-wide in Application.onCreate — Ninja WG is
+        // dark-only (see DESIGN.md), so there is nothing to negotiate here.
         super.onCreate(savedInstanceState)
         binding = TvActivityBinding.inflate(layoutInflater)
         lifecycleScope.launch {
