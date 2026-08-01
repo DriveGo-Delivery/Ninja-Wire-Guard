@@ -50,9 +50,13 @@ Provide the config with one of these methods.
 | `url` | URL-encoded `.conf` file URL |
 | `conf` | URL-encoded raw WireGuard config |
 | `config` | Same as `conf` |
-| `conf_b64` | URL-safe base64 encoded config |
+| `conf_b64` | Base64 encoded config (standard or URL-safe alphabet) |
 | `config_b64` | Same as `conf_b64` |
-| URL fragment | Raw config text containing `[Interface]` |
+| URL fragment | Raw config text containing `[Interface]` — direct `ninjawg://` links only |
+
+The URL fragment method cannot be combined with the `intent://` form below: in an
+`intent:` URI everything after `#` is the Intent parameter block, so there is no
+fragment left to carry a config. Use `conf`, `conf_b64` or `url` with `intent://`.
 
 Direct scheme example:
 
@@ -141,12 +145,21 @@ Supported duration units:
 
 | Unit | Meaning |
 | --- | --- |
+| *(omitted)* | seconds |
 | `s`, `sec`, `secs`, `second`, `seconds` | seconds |
 | `m`, `min`, `mins`, `minute`, `minutes` | minutes |
 | `h`, `hr`, `hrs`, `hour`, `hours` | hours |
 | `d`, `day`, `days` | days |
 
 Timestamps can be Unix seconds, Unix milliseconds, or ISO-8601 UTC strings.
+ISO-8601 values need an explicit offset (`2026-05-08T12:00:00Z`, not
+`2026-05-08T12:00:00`). A timestamp already in the past deletes the tunnel as soon
+as it has finished being imported and activated.
+
+Expiry is enforced by an alarm. Android only grants exact alarms on request, so
+without that grant the deletion can be delayed while the device is dozing, and a
+force-stop drops pending alarms entirely. The app therefore also deletes anything
+past due whenever it is brought to the foreground.
 
 ## Config Metadata Syntax
 
@@ -191,6 +204,9 @@ Both `#` and `;` comment prefixes are supported.
 ```conf
 ; NinjaWG-Delete-After: 30m
 ```
+
+Plain `;` comment lines are also stripped before parsing, because the WireGuard
+config parser itself only understands `#`.
 
 ## Priority
 

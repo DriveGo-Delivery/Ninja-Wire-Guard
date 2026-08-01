@@ -138,6 +138,9 @@
     <string name="deeplink_import_success">Applied “%s” from browser link</string>
     <string name="deeplink_import_update_success">Updated “%s” from browser link</string>
     <string name="deeplink_import_and_start_success">Applied and started “%s” from browser link</string>
+    <string name="deeplink_import_invalid_config">The linked configuration is not valid</string>
+    <string name="deeplink_tunnel_unavailable">The tunnel is no longer available</string>
+    <string name="deeplink_vpn_permission_denied">VPN permission denied, “%s” was not started</string>
     <string name="import_from_qr_code">Import Tunnel from QR Code</string>
     <string name="import_success">Imported “%s”</string>
     <string name="interface_title">Interface</string>

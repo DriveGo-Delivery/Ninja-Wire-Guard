@@ -16,12 +16,16 @@ import kotlinx.coroutines.launch
 class BootShutdownReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action ?: return
+        // Alarms are cleared by a reboot, and this has to run regardless of backend: the
+        // WgQuickBackend check below returns early on every non-rooted device, which is
+        // where the vast majority of installs live.
+        if (Intent.ACTION_BOOT_COMPLETED == action)
+            AutoDeleteTunnelScheduler.rescheduleAll(context)
         applicationScope.launch {
             if (Application.getBackend() !is WgQuickBackend) return@launch
             val tunnelManager = Application.getTunnelManager()
             if (Intent.ACTION_BOOT_COMPLETED == action) {
                 Log.i(TAG, "Broadcast receiver restoring state (boot)")
-                AutoDeleteTunnelScheduler.rescheduleAll(context)
                 tunnelManager.restoreState(false)
             } else if (Intent.ACTION_SHUTDOWN == action) {
                 Log.i(TAG, "Broadcast receiver saving state (shutdown)")

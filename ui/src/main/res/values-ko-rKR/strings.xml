@@ -121,6 +121,9 @@
     <string name="deeplink_import_success">브라우저 링크에서 “%s” 적용됨</string>
     <string name="deeplink_import_update_success">브라우저 링크에서 “%s” 업데이트됨</string>
     <string name="deeplink_import_and_start_success">브라우저 링크에서 “%s” 적용 후 시작됨</string>
+    <string name="deeplink_import_invalid_config">링크의 설정이 올바르지 않음</string>
+    <string name="deeplink_tunnel_unavailable">터널을 더 이상 사용할 수 없음</string>
+    <string name="deeplink_vpn_permission_denied">VPN 권한이 거부되어 “%s”를 시작하지 않음</string>
     <string name="import_from_qr_code">QR코드에서 터널 불러오기</string>
     <string name="import_success">\"%s\" 불러옴</string>
     <string name="interface_title">인터페이스</string>

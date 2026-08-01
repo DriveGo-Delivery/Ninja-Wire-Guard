@@ -26,9 +26,13 @@ import com.wireguard.android.backend.Tunnel
 import com.wireguard.android.fragment.TunnelDetailFragment
 import com.wireguard.android.fragment.TunnelEditorFragment
 import com.wireguard.android.model.ObservableTunnel
+import com.wireguard.android.util.AutoDeleteTunnelScheduler
 import com.wireguard.android.util.DeepLinkTunnelImporter
 import com.wireguard.android.util.ErrorMessages
+import com.wireguard.config.BadConfigException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * CRUD interface for WireGuard tunnels. This activity serves as the main entry point to the
@@ -39,15 +43,36 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
     private var actionBar: ActionBar? = null
     private var isTwoPaneLayout = false
     private var backPressedCallback: OnBackPressedCallback? = null
-    private var pendingDeepLinkTunnel: ObservableTunnel? = null
+
+    // Only the name is kept: the tunnel itself is re-resolvable, and these have to survive
+    // the process being killed while the VPN consent dialog is in front of us.
     private var pendingDeepLinkTunnelName: String? = null
-    private val permissionActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        val tunnel = pendingDeepLinkTunnel
+    private var pendingDeepLinkAutoDeleteAtMillis: Long? = null
+
+    private val permissionActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val tunnelName = pendingDeepLinkTunnelName
-        pendingDeepLinkTunnel = null
+        val autoDeleteAtMillis = pendingDeepLinkAutoDeleteAtMillis
         pendingDeepLinkTunnelName = null
-        if (tunnel != null && tunnelName != null)
-            lifecycleScope.launch { startDeepLinkTunnel(tunnel, tunnelName) }
+        pendingDeepLinkAutoDeleteAtMillis = null
+        if (tunnelName == null) return@registerForActivityResult
+        lifecycleScope.launch {
+            if (result.resultCode == RESULT_OK) {
+                val tunnel = Application.getTunnelManager().getTunnels()[tunnelName]
+                if (tunnel != null)
+                    startDeepLinkTunnel(tunnel, tunnelName)
+                else
+                    showImportError(getString(R.string.deeplink_tunnel_unavailable))
+            } else {
+                // Say the permission was declined rather than letting the backend fail with
+                // an opaque "error bringing up tunnel".
+                Toast.makeText(
+                    this@MainActivity,
+                    getString(R.string.deeplink_vpn_permission_denied, tunnelName),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            armAutoDelete(tunnelName, autoDeleteAtMillis)
+        }
     }
 
     private fun handleBackPressed() {
@@ -83,14 +108,34 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
         supportFragmentManager.addOnBackStackChangedListener(this)
         backPressedCallback = onBackPressedDispatcher.addCallback(this) { handleBackPressed() }
         onBackStackChanged()
-        if (savedInstanceState == null)
+        if (savedInstanceState != null) {
+            pendingDeepLinkTunnelName = savedInstanceState.getString(KEY_PENDING_DEEP_LINK_TUNNEL)
+            if (savedInstanceState.containsKey(KEY_PENDING_DEEP_LINK_AUTO_DELETE))
+                pendingDeepLinkAutoDeleteAtMillis = savedInstanceState.getLong(KEY_PENDING_DEEP_LINK_AUTO_DELETE)
+        } else {
             handleDeepLinkIntent(intent)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        pendingDeepLinkTunnelName?.let { outState.putString(KEY_PENDING_DEEP_LINK_TUNNEL, it) }
+        pendingDeepLinkAutoDeleteAtMillis?.let { outState.putLong(KEY_PENDING_DEEP_LINK_AUTO_DELETE, it) }
+        super.onSaveInstanceState(outState)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         handleDeepLinkIntent(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Alarm delivery is best-effort: inexact without exact-alarm access, and dropped
+        // outright by a force-stop. Sweep whatever is already past due while we are visible.
+        lifecycleScope.launch {
+            AutoDeleteTunnelScheduler.deleteDue(applicationContext)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -156,20 +201,36 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
     }
 
     private fun handleDeepLinkIntent(intent: Intent?) {
-        if (intent == null) return
+        if (intent == null || intent.action != Intent.ACTION_VIEW || intent.data == null) return
+        // Android redelivers the original launch intent when it recreates a task whose saved
+        // state has been trimmed, and hands it back when the user returns through Recents.
+        // Importing again would silently resurrect a tunnel and re-activate the VPN, so treat
+        // a history relaunch as nothing to do and consume the URI once it has been handled.
+        if (intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY != 0) {
+            intent.data = null
+            return
+        }
+        val deepLinkIntent = Intent(intent)
+        intent.data = null
+
         lifecycleScope.launch {
             val result = try {
-                DeepLinkTunnelImporter.importFromIntent(intent)
+                DeepLinkTunnelImporter.importFromIntent(deepLinkIntent)
             } catch (e: Throwable) {
-                Log.e(TAG, "Unable to import tunnel from deep link: ${DeepLinkTunnelImporter.describeIntent(intent)}", e)
-                Toast.makeText(this@MainActivity, getString(R.string.import_error, ErrorMessages[e]), Toast.LENGTH_LONG).show()
+                reportImportFailure(deepLinkIntent, e)
                 return@launch
             } ?: return@launch
 
             val tunnel = Application.getTunnelManager().getTunnels()[result.tunnelName]
+            if (tunnel == null) {
+                // The import reported success, so a missing tunnel means something removed it
+                // underneath us. Say so instead of finishing silently.
+                showImportError(getString(R.string.deeplink_tunnel_unavailable))
+                return@launch
+            }
             selectedTunnel = tunnel
-            if (result.shouldStart && tunnel != null) {
-                startDeepLinkTunnelWithPermission(tunnel, result.tunnelName)
+            if (result.shouldStart) {
+                startDeepLinkTunnelWithPermission(tunnel, result.tunnelName, result.autoDeleteAtMillis)
                 return@launch
             }
             val message = getString(
@@ -180,16 +241,53 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
                 result.tunnelName
             )
             Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
+            armAutoDelete(result.tunnelName, result.autoDeleteAtMillis)
         }
     }
 
-    private suspend fun startDeepLinkTunnelWithPermission(tunnel: ObservableTunnel, tunnelName: String) {
+    /**
+     * A [BadConfigException] carries the offending config line in its message. For a deep
+     * link that line can be key material, or the body of whatever `url` pointed at — which
+     * makes it a way to read a LAN endpoint into an exportable log. Keep it out of both the
+     * toast and logcat.
+     */
+    private fun reportImportFailure(intent: Intent, e: Throwable) {
+        val describedIntent = DeepLinkTunnelImporter.describeIntent(intent)
+        if (e is BadConfigException) {
+            Log.e(TAG, "Unable to parse config from deep link $describedIntent: ${e.javaClass.simpleName}")
+            showImportError(getString(R.string.deeplink_import_invalid_config))
+        } else {
+            Log.e(TAG, "Unable to import tunnel from deep link: $describedIntent", e)
+            showImportError(ErrorMessages[e])
+        }
+    }
+
+    private fun showImportError(reason: CharSequence) {
+        Toast.makeText(this, getString(R.string.import_error, reason), Toast.LENGTH_LONG).show()
+    }
+
+    /**
+     * Arms the expiry only once activation has settled. Scheduling an already-due expiry
+     * before that lets the delete interleave with bringing the tunnel up.
+     */
+    private suspend fun armAutoDelete(tunnelName: String, autoDeleteAtMillis: Long?) {
+        if (autoDeleteAtMillis == null) return
+        withContext(Dispatchers.IO) {
+            AutoDeleteTunnelScheduler.schedule(applicationContext, tunnelName, autoDeleteAtMillis)
+        }
+    }
+
+    private suspend fun startDeepLinkTunnelWithPermission(
+        tunnel: ObservableTunnel,
+        tunnelName: String,
+        autoDeleteAtMillis: Long?
+    ) {
         if (Application.getBackend() is GoBackend) {
             try {
                 val intent = GoBackend.VpnService.prepare(this)
                 if (intent != null) {
-                    pendingDeepLinkTunnel = tunnel
                     pendingDeepLinkTunnelName = tunnelName
+                    pendingDeepLinkAutoDeleteAtMillis = autoDeleteAtMillis
                     permissionActivityResultLauncher.launch(intent)
                     return
                 }
@@ -197,10 +295,12 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
                 val message = getString(R.string.error_prepare, ErrorMessages[e])
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show()
                 Log.e(TAG, message, e)
+                armAutoDelete(tunnelName, autoDeleteAtMillis)
                 return
             }
         }
         startDeepLinkTunnel(tunnel, tunnelName)
+        armAutoDelete(tunnelName, autoDeleteAtMillis)
     }
 
     private suspend fun startDeepLinkTunnel(tunnel: ObservableTunnel, tunnelName: String) {
@@ -216,5 +316,7 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
 
     companion object {
         private const val TAG = "WG/MainActivity"
+        private const val KEY_PENDING_DEEP_LINK_TUNNEL = "pending_deep_link_tunnel"
+        private const val KEY_PENDING_DEEP_LINK_AUTO_DELETE = "pending_deep_link_auto_delete"
     }
 }

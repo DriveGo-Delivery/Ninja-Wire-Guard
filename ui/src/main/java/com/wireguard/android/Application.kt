@@ -98,6 +98,9 @@ class Application : android.app.Application() {
                 futureBackend.complete(backend!!)
             } catch (e: Throwable) {
                 Log.e(TAG, Log.getStackTraceString(e))
+                // getBackend() awaits this deferred, so leaving it incomplete suspends
+                // every caller — including tunnel activation — for the life of the process.
+                futureBackend.completeExceptionally(e)
             }
         }
         if (BuildConfig.DEBUG) {

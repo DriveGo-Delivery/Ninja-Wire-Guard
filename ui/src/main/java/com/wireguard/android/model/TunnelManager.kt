@@ -22,6 +22,7 @@ import com.wireguard.android.backend.Statistics
 import com.wireguard.android.backend.Tunnel
 import com.wireguard.android.configStore.ConfigStore
 import com.wireguard.android.databinding.ObservableSortedKeyedArrayList
+import com.wireguard.android.util.AutoDeleteTunnelScheduler
 import com.wireguard.android.util.ErrorMessages
 import com.wireguard.android.util.UserKnobs
 import com.wireguard.android.util.applicationScope
@@ -84,6 +85,9 @@ class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
                 lastUsedTunnel = tunnel
             throw e
         }
+        // Only now that the tunnel is really gone: a leftover expiry would fire later and
+        // delete whatever tunnel next takes this name.
+        withContext(Dispatchers.IO) { AutoDeleteTunnelScheduler.cancel(context, tunnel.name) }
     }
 
     @get:Bindable
@@ -105,6 +109,9 @@ class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
                 onTunnelsLoaded(withContext(Dispatchers.IO) { configStore.enumerate() }, withContext(Dispatchers.IO) { getBackend().runningTunnelNames })
             } catch (e: Throwable) {
                 Log.e(TAG, Log.getStackTraceString(e))
+                // Every getTunnels() caller awaits this deferred. Swallowing the failure
+                // here would leave all of them suspended for the life of the process.
+                tunnels.completeExceptionally(e)
             }
         }
     }
@@ -113,12 +120,19 @@ class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
         for (name in present)
             addToList(name, null, if (running.contains(name)) Tunnel.State.UP else Tunnel.State.DOWN)
         applicationScope.launch {
-            val lastUsedName = UserKnobs.lastUsedTunnel.first()
-            if (lastUsedName != null)
-                lastUsedTunnel = tunnelMap[lastUsedName]
-            haveLoaded = true
-            restoreState(true)
-            tunnels.complete(tunnelMap)
+            try {
+                val lastUsedName = UserKnobs.lastUsedTunnel.first()
+                if (lastUsedName != null)
+                    lastUsedTunnel = tunnelMap[lastUsedName]
+                haveLoaded = true
+                restoreState(true)
+            } catch (e: Throwable) {
+                Log.e(TAG, Log.getStackTraceString(e))
+            } finally {
+                // The list itself is usable even if restoring state failed, and callers are
+                // blocked until it is published.
+                tunnels.complete(tunnelMap)
+            }
         }
     }
 
@@ -154,9 +168,28 @@ class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
     }
 
     suspend fun setTunnelConfig(tunnel: ObservableTunnel, config: Config): Config = withContext(Dispatchers.Main.immediate) {
+        // Read the observable state on the main thread, which owns it, rather than from
+        // inside the IO block below.
+        val name = tunnel.name
+        val state = tunnel.state
+        val previousConfig = tunnel.config
         tunnel.onConfigChanged(withContext(Dispatchers.IO) {
-            getBackend().setState(tunnel, tunnel.state, config)
-            configStore.save(tunnel.name, config)
+            getBackend().setState(tunnel, state, config)
+            try {
+                configStore.save(name, config)
+            } catch (e: Throwable) {
+                // The backend is already running the new config while the store still holds
+                // the old one, and onConfigChanged below will never run. Put the backend
+                // back so the running tunnel, the store and the in-memory config agree.
+                if (previousConfig != null) {
+                    try {
+                        getBackend().setState(tunnel, state, previousConfig)
+                    } catch (rollbackFailure: Throwable) {
+                        e.addSuppressed(rollbackFailure)
+                    }
+                }
+                throw e
+            }
         })!!
     }
 
@@ -167,6 +200,7 @@ class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
             throw IllegalArgumentException(context.getString(R.string.tunnel_error_already_exists, name))
         }
         val originalState = tunnel.state
+        val previousName = tunnel.name
         val wasLastUsed = tunnel == lastUsedTunnel
         // Make sure nothing touches the tunnel.
         if (wasLastUsed)
@@ -177,7 +211,12 @@ class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
         try {
             if (originalState == Tunnel.State.UP)
                 withContext(Dispatchers.IO) { getBackend().setState(tunnel, Tunnel.State.DOWN, null) }
-            withContext(Dispatchers.IO) { configStore.rename(tunnel.name, name) }
+            withContext(Dispatchers.IO) {
+                configStore.rename(previousName, name)
+                // The expiry store is keyed by name, so carry it across or the alarm fires
+                // against a name that no longer resolves and the expiry is lost.
+                AutoDeleteTunnelScheduler.rename(context, previousName, name)
+            }
             newName = tunnel.onNameChanged(name)
             if (originalState == Tunnel.State.UP)
                 withContext(Dispatchers.IO) { getBackend().setState(tunnel, Tunnel.State.UP, tunnel.config) }
