@@ -203,7 +203,7 @@
     <!-- Switch — VPN toggle. Checked track = accent-blue (selected signal)    -->
     <!-- ===================================================================== -->
 
-    <style name="Widget.NinjaWG.Switch" parent="Widget.AppCompat.CompoundButton.Switch">
+    <style name="Widget.NinjaWG.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
         <item name="android:thumbTint">@color/framer_switch_thumb</item>
         <item name="android:trackTint">@color/framer_switch_track</item>
         <item name="thumbTint">@color/framer_switch_thumb</item>

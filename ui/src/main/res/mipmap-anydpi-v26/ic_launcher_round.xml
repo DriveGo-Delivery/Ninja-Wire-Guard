@@ -5,5 +5,7 @@
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@drawable/ic_launcher_bg" />
     <foreground android:drawable="@drawable/ic_launcher_full" />
-    <monochrome android:drawable="@drawable/ic_launcher_full" />
+    <!-- No <monochrome>: the layer is alpha-only and system-tinted, so pointing it at
+         the full-colour mark renders a solid blob in themed-icon mode. Omitting it makes
+         the launcher fall back to the standard icon instead. -->
 </adaptive-icon>

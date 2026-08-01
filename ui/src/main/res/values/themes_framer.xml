@@ -92,7 +92,9 @@
         <item name="materialCardViewStyle">@style/Widget.NinjaWG.Card</item>
         <item name="textInputStyle">@style/Widget.NinjaWG.TextInput</item>
         <item name="floatingActionButtonStyle">@style/Widget.NinjaWG.Fab</item>
-        <item name="switchStyle">@style/Widget.NinjaWG.Switch</item>
+        <!-- ToggleSwitch extends MaterialSwitch, which resolves materialSwitchStyle;
+             switchStyle alone never reaches the VPN toggle. -->
+        <item name="materialSwitchStyle">@style/Widget.NinjaWG.Switch</item>
         <item name="tabStyle">@style/Widget.NinjaWG.TabLayout</item>
         <item name="toolbarStyle">@style/WireGuardTheme.Toolbar</item>
         <item name="bottomSheetDialogTheme">@style/WireGuardTheme.BottomSheetDialog</item>
